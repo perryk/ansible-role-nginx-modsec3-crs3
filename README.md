@@ -49,6 +49,7 @@ There are lots of variables however in the nginx role, perhaps the best explanat
 
 Example playbook calling the role adding and enabling ModSecurity for the default Nginx site.
 
+```yaml
 - hosts: servers
 
   vars:
@@ -71,7 +72,7 @@ Example playbook calling the role adding and enabling ModSecurity for the defaul
 
   roles:
     - perryk.nginx-modsec3-crs3
-
+```
 
 # License
 
