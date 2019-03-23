@@ -20,15 +20,15 @@ galaxy_info:
     - all
 
   galaxy_tags:
-  - ModSecurity
-  - ModSecurity3
+  - modsecurity
+  - modsecurity3
   - Security
-  - WAF
-  - OWASP
-  - CRS
-  - CRS3
-  - Ruleset
-  - Nginx
+  - waf
+  - owasp
+  - crs
+  - crs3
+  - ruleset
+  - nginx
 
 dependencies: []
 
