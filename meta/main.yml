@@ -1,0 +1,34 @@
+galaxy_info:
+  author: "Perry Kollmorgen (https://github.com/perryk)"
+  name: nginx-modsec3-crs3
+  description: "Installs Nginx, Compiles ModSecurity3, and downloads the OWASP CRS v3 ruleset (https://nginx.com, https://modsecurity.org, https://modsecurity.org/crs)"
+
+  license: MIT
+
+  min_ansible_version: 2.4
+
+  platforms:
+  - name: EL
+    versions:
+    - 6
+    - 7
+  - name: Debian
+    versions:
+    - all
+  - name: Ubuntu
+    versions:
+    - all
+
+  galaxy_tags:
+  - ModSecurity
+  - ModSecurity3
+  - Security
+  - WAF
+  - OWASP
+  - CRS
+  - CRS3
+  - Ruleset
+  - Nginx
+
+dependencies: []
+

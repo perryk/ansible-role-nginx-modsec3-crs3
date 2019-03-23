@@ -1,0 +1,32 @@
+---
+# defaults file for ansible-role-nginx-modsec3-crs3
+
+nginx_modsec3_crs3_debian_pre_reqs:
+  - libgeoip-dev
+  - libcurl4-openssl-dev
+  - liblua5.2-dev
+  - libyajl-dev
+  - libxml2-dev
+  - libpcre3-dev
+  - libpcre++-dev
+  - ssdeep
+  - libfuzzy-dev
+  - git
+
+nginx_modsec3_crs3_debian_compiler_reqs:
+  - build-essential
+
+nginx_modsec3_crs3_redhat_pre_reqs:
+  - GeoIP-devel
+  - curl-devel
+  - lua-devel
+  - yajl-devel
+  - libxml2-devel
+  - xz-devel
+  - pcre-devel
+  - ssdeep-devel
+  - ssdeep-libs
+  - git
+
+nginx_modsec3_crs3_redhat_compiler_reqs:
+  - "@Development tools"

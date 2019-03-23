@@ -1,0 +1,125 @@
+# vim: set ft=ansible et ts=2 sw=2:
+---
+# Tasks for compiling Modsecurity3 and installing OWASP CRS v3
+
+- name: Obtain Modsecurity source code for branch v3/master
+  git:
+    repo: "https://github.com/SpiderLabs/ModSecurity"
+    dest: "~/ModSecurity"
+    depth: 1
+    version: "v3/master"
+    force: yes
+
+- name: Init submodules, configure, build, make install
+  command: "{{ item }}"
+  args:
+    chdir: "~/ModSecurity"
+    creates: "/usr/local/modsecurity/lib/libmodsecurity.so"
+  with_items:
+    - "git submodule init"
+    - "git submodule update"
+    - "./build.sh"
+    - "./configure"
+    - "make"
+    - "make install"
+
+- name: Obtain Modsecurity-nginx source code
+  git:
+    repo: "https://github.com/SpiderLabs/ModSecurity-nginx"
+    dest: "~/ModSecurity-nginx"
+    depth: 1
+    force: yes
+
+- name: Download Nginx source code
+  get_url:
+    url: "https://nginx.org/download/nginx-{{ nginx_modsec3_crs3_nginx_version }}.tar.gz"
+    dest: "/tmp/nginx-{{ nginx_modsec3_crs3_nginx_version }}.tar.gz"
+
+- name: Create folder for Nginx source code
+  file:
+    path: "~/Nginx"
+    state: directory
+
+- name: Extract Nginx source code
+  unarchive:
+    src: "/tmp/nginx-{{ nginx_modsec3_crs3_nginx_version }}.tar.gz"
+    dest: "~/Nginx"
+    remote_src: yes
+
+- name: Configure and make ModSecurity3 for Nginx module
+  command: "{{ item }}"
+  args:
+    chdir: "~/Nginx/nginx-{{ nginx_modsec3_crs3_nginx_version }}"
+    creates: "~/mods.so"
+  with_items:
+    - "./configure --with-compat --add-dynamic-module=../../ModSecurity-nginx"
+    - "make modules"
+
+- name: import nginx role Debian/Ubuntu vars
+  include_vars:
+    file: "../ansible-role-nginx/vars/Debian.yml"
+  when:
+    - ansible_os_family == "Debian"
+    #- nginx_modules_location is not defined
+    #- nginx_python_selinux_pkgs is not defined
+
+- name: import nginx role Redhat/Centos vars
+  include_vars:
+    file: "../ansible-role-nginx/vars/Redhat.yml"
+  when:
+    - ansible_os_family == "Redhat"
+    #- nginx_modules_location is not defined
+    #- nginx_python_selinux_pkgs is not defined
+
+- name: set nginx_conf_dir if not already set
+  set_fact:
+    nginx_conf_dir: "/etc/nginx"
+  when: nginx_conf_dir is not defined
+
+- name: Copy Modsecurity-nginx module to Nginx modules folder
+  copy:
+    src: "~/Nginx/nginx-{{ nginx_modsec3_crs3_nginx_version }}/objs/ngx_http_modsecurity_module.so"
+    dest: "{{ nginx_modules_location }}"
+    remote_src: yes
+
+- name: Create folder for Modsec config and rules
+  file:
+    #path: /etc/nginx/modsec
+    path: "{{ nginx_conf_dir }}/modsec"
+    state: directory
+
+- name: Copy recommended conf to become modsecurity.conf
+  copy:
+    src: "~/ModSecurity/modsecurity.conf-recommended"
+    dest: "{{ nginx_conf_dir }}/modsec/modsecurity.conf"
+    remote_src: yes
+
+- name: Copy unicode.mapping file also
+  copy:
+    src: "~/ModSecurity/unicode.mapping"
+    dest: "{{ nginx_conf_dir }}/modsec/unicode.mapping"
+    remote_src: yes
+
+- name: Activate blocking rather than detection only
+  replace:
+    path: "{{ nginx_conf_dir }}/modsec/modsecurity.conf"
+    regexp: "SecRuleEngine DetectionOnly"
+    replace: "SecRuleEngine On"
+
+- name: Create a main.conf from template
+  template:
+    src: main.conf.j2
+    dest: "{{ nginx_conf_dir }}/modsec/main.conf"
+
+- name: Obtain OWASP Modsecurity Rules
+  git:
+    repo: "https://github.com/SpiderLabs/owasp-modsecurity-crs"
+    dest: "{{ nginx_conf_dir }}/modsec/owasp-modsecurity-crs"
+    version: "v3.2/dev"
+
+- name: Copy crs-setup.conf.example to become crs-setup.conf
+  copy:
+    src: "{{ nginx_conf_dir }}/modsec/owasp-modsecurity-crs/crs-setup.conf.example"
+    dest: "{{ nginx_conf_dir }}/modsec/owasp-modsecurity-crs/crs-setup.conf"
+    remote_src: yes
+
