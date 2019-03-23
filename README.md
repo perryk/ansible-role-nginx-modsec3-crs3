@@ -36,6 +36,8 @@ Install any required [Ansible](https://www.ansible.com) roles from `requirements
 ansible-galaxy install -r requirements.yml
 ```
 
+n.b in particular this role will call certain tasks from the nginx role so be sure to have it installed in the same location as this role.
+
 ## Role Variables
 
 Browse the role's [defaults/main.yml](defaults/main.yml) and [vars/main.yml](vars/main.yml) files to see if there is anything you would like to change or need to override by setting in your playbook.
