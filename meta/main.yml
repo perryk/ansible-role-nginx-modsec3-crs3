@@ -26,14 +26,12 @@ galaxy_info:
 
   galaxy_tags:
   - modsecurity
-  - modsecurity3
   - security
   - waf
-  - owasp
   - crs
-  - crs3
-  - ruleset
   - nginx
+  - web
+  - system
 
 dependencies: []
 
