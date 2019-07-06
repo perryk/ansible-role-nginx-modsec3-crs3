@@ -36,7 +36,17 @@ Install any required [Ansible](https://www.ansible.com) roles from `requirements
 ansible-galaxy install -r requirements.yml
 ```
 
-n.b in particular this role will call certain tasks from the nginx role so be sure to have it installed in the same location as this role.
+n.b in particular this role will call certain tasks from the nginx role so be sure to have it installed in the same location as this role and with a specific name of "ansible-role-nginx".
+
+i.e this in the requirements.yml file for your project's playbook (not the requirements.yml file for this role) you will need to include both this role and the role mentioned above like this:
+
+```yml
+- src: perryk.nginx_modsec3_crs3
+
+- src: https://github.com/jdauphant/ansible-role-nginx
+  version: master
+```
+
 
 ## Role Variables
 
