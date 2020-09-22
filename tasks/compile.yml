@@ -113,9 +113,9 @@
 
 - name: Obtain OWASP Modsecurity Rules
   git:
-    repo: "https://github.com/SpiderLabs/owasp-modsecurity-crs"
+    repo: "https://github.com/coreruleset/coreruleset"
     dest: "{{ nginx_conf_dir }}/modsec/owasp-modsecurity-crs"
-    version: "v3.2/dev"
+    version: "v3.4/dev"
 
 - name: Copy crs-setup.conf.example to become crs-setup.conf
   copy:
