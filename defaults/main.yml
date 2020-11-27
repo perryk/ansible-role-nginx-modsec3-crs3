@@ -19,14 +19,17 @@ nginx_modsec3_crs3_debian_compiler_reqs:
 nginx_modsec3_crs3_redhat_pre_reqs:
   - GeoIP-devel
   - curl-devel
-  - lua-devel
-  - yajl-devel
+  # - lua-devel
+  # - yajl-devel
   - libxml2-devel
   - xz-devel
   - pcre-devel
   - ssdeep-devel
   - ssdeep-libs
   - git
+  - openssl-devel
+  - libxslt-devel
+  - gd-devel
 
 nginx_modsec3_crs3_redhat_compiler_reqs:
   - "@Development tools"
