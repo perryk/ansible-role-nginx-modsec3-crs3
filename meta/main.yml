@@ -1,6 +1,6 @@
 galaxy_info:
   author: "Perry Kollmorgen (https://github.com/perryk)"
-  role_name: nginx-modsec3-crs3
+  role_name: nginx_modsec3_crs3
   description: "Installs Nginx, Compiles ModSecurity3, and downloads the OWASP CRS v3 ruleset (https://nginx.com, https://modsecurity.org, https://modsecurity.org/crs)"
 
   license: MIT
