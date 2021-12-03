@@ -57,7 +57,9 @@
     chdir: "~/Nginx/nginx-{{ nginx_modsec3_crs3_nginx_version }}"
     creates: "~/mods.so"
   with_items:
-    - "CFLAGS=-Wno-error ./configure {{ result.stdout }} --add-dynamic-module=../../ModSecurity-nginx"
+    # Latest version had troubles parsing the entire configure arguments so trying just with --with-compat
+    #- "CFLAGS=-Wno-error ./configure {{ result.stdout }} --add-dynamic-module=../../ModSecurity-nginx"
+    - "CFLAGS=-Wno-error ./configure --with-compat --add-dynamic-module=../../ModSecurity-nginx"
     - "make modules"
 
 - name: import nginx role Debian/Ubuntu vars
