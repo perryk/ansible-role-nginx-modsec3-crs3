@@ -35,21 +35,21 @@
 
 - name: run Nginx selinux tasks
   include_role:
-    name: ansible-role-nginx
+    name: jdauphant.nginx
     tasks_from: selinux.yml
     allow_duplicates: yes
   when: ansible_selinux and ansible_selinux.status == "enabled"
 
 - name: run Nginx nginx offical repo tasks
   include_role:
-    name: ansible-role-nginx
+    name: jdauphant.nginx
     tasks_from: nginx-official-repo.yml
     allow_duplicates: yes
   when: nginx_official_repo == True
 
 - name: run Nginx install packages tasks
   include_role:
-    name: ansible-role-nginx
+    name: jdauphant.nginx
     tasks_from: installation.packages.yml
     allow_duplicates: yes
 #  when: nginx_installation_type == "packages"
@@ -67,7 +67,7 @@
 
 - name: Configure Nginx now that the Modsec module is built
   import_role:
-    name: ansible-role-nginx
+    name: jdauphant.nginx
 
 - name: Check which packages were installed for Debian/Ubuntu
   shell: dpkg-query -l > /tmp/after.txt
