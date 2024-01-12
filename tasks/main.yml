@@ -63,7 +63,7 @@
     nginx_modsec3_crs3_nginx_version: "{{ ansible_facts.packages.nginx[0].version.split('-')[0] }}"
 
 - name: Compile ModSecurity3 and install OWAPS CRS3
-  include: compile.yml
+  import_tasks: compile.yml
 
 - name: Configure Nginx now that the Modsec module is built
   import_role:

@@ -70,14 +70,14 @@ Example playbook calling the role adding and enabling ModSecurity for the defaul
       - nginx
     nginx_install_epel_repo: False
     nginx_official_repo: True
-    nginx_official_repo_mainline: True
+    nginx_official_repo_mainline: False
     nginx_module_configs:
       - ngx_http_modsecurity_module
     nginx_sites:
       default:
        - listen 80
        - server_name _
-       - "Modsecurity on"
+       - "modsecurity on"
        - "modsecurity_rules_file /etc/nginx/modsec/main.conf"
        - root "/usr/share/nginx/html"
        - index index.html
