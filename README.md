@@ -73,6 +73,7 @@ Example playbook calling the role adding and enabling ModSecurity for the defaul
     nginx_official_repo_mainline: False
     nginx_module_configs:
       - ngx_http_modsecurity_module
+      - ngx_http_geoip_module
     nginx_sites:
       default:
        - listen 80
