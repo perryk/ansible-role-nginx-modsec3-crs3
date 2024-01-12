@@ -59,7 +59,7 @@
   with_items:
     # Latest version had troubles parsing the entire configure arguments so trying just with --with-compat
     #- "CFLAGS=-Wno-error ./configure {{ result.stdout }} --add-dynamic-module=../../ModSecurity-nginx"
-    - "CFLAGS=-Wno-error ./configure --with-compat --add-dynamic-module=../../ModSecurity-nginx"
+    - "CFLAGS=-Wno-error ./configure --with-compat --add-dynamic-module=../../ModSecurity-nginx --with-http_geoip_module=dynamic"
     - "make modules"
 
 - name: import nginx role Debian/Ubuntu vars
@@ -83,11 +83,14 @@
     nginx_conf_dir: "/etc/nginx"
   when: nginx_conf_dir is not defined
 
-- name: Copy Modsecurity-nginx module to Nginx modules folder
+- name: Copy ModSecurity-nginx and GeoIP2 modules to Nginx modules folder
   copy:
-    src: "~/Nginx/nginx-{{ nginx_modsec3_crs3_nginx_version }}/objs/ngx_http_modsecurity_module.so"
+    src: "{{ item }}"
     dest: "{{ nginx_modules_location }}"
     remote_src: yes
+  loop:
+    - "~/Nginx/nginx-{{ nginx_modsec3_crs3_nginx_version }}/objs/ngx_http_modsecurity_module.so"
+    - "~/Nginx/nginx-{{ nginx_modsec3_crs3_nginx_version }}/objs/ngx_http_geoip_module.so"
 
 - name: Create folder for Modsec config and rules
   file:
@@ -122,7 +125,7 @@
   git:
     repo: "https://github.com/coreruleset/coreruleset"
     dest: "{{ nginx_conf_dir }}/modsec/owasp-modsecurity-crs"
-    version: "v3.4/dev"
+    version: "v3.3.5"
 
 - name: Copy crs-setup.conf.example to become crs-setup.conf
   copy:
