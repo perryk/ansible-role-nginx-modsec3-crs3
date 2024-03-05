@@ -1,7 +1,7 @@
 galaxy_info:
   author: "Perry Kollmorgen (https://github.com/perryk)"
   role_name: nginx_modsec3_crs3
-  description: "Installs Nginx, Compiles ModSecurity3, and downloads the OWASP CRS v3 ruleset (https://nginx.com, https://modsecurity.org, https://modsecurity.org/crs)"
+  description: "Installs Nginx, Compiles ModSecurity3, and downloads the OWASP CRS ruleset (https://nginx.com, https://owasp.org/, https://coreruleset.org/)"
 
   license: MIT
 
@@ -13,17 +13,26 @@ galaxy_info:
     - 6
     - 7
     - 8
+    - 9
   - name: Debian
     versions:
     - jessie
     - stretch
-    - sid
+    - buster
+    - bullseye
+    - bookworm
   - name: Ubuntu
     versions:
-    - zesty
-    - artful
     - bionic
-    - cosmic  
+    - cosmic
+    - disco
+    - eoan
+    - focal
+    - groovy
+    - hirsute
+    - impish
+    - jammy
+    - mantic
 
   galaxy_tags:
   - modsecurity

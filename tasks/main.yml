@@ -7,31 +7,11 @@
     state: present
   when: ansible_os_family == "Debian"
 
-- name: Installing Pre-Reqs for RHEL/Centos
-  yum:
+- name: Installing Pre-Reqs for RHEL/Centos/OracleLinux
+  dnf:
     name: "{{ nginx_modsec3_crs3_redhat_pre_reqs }}"
     state: present
   when: ansible_os_family == "RedHat"
-
-- name: Save the current list of packages for Debian/Ubuntu
-  shell: dpkg-query -l > /tmp/before.txt
-  when: ansible_os_family == "Debian" and ( nginx_modsec3_crs3_keep is undefined or not nginx_modsec3_crs3_keep )
-
-- name: Save the current list of packages for RHEL/Centos
-  shell: rpm -qa > /tmp/before.txt
-  when: ansible_os_family == 'RedHat' and ( nginx_modsec3_crs3_keep is undefined or not nginx_modsec3_crs3_keep )
-
-- name: Installing compiler dependencies for Debian/Ubuntu
-  apt:
-    name: "{{ nginx_modsec3_crs3_debian_compiler_reqs }}"
-    state: present
-  when: ansible_os_family == "Debian"
-
-- name: Installing compiler dependencies for RHEL/Centos
-  yum:
-    name: "{{ nginx_modsec3_crs3_redhat_compiler_reqs }}"
-    state: present
-  when: ansible_os_family == "Redhat"
 
 - name: run Nginx selinux tasks
   include_role:
@@ -52,7 +32,28 @@
     name: ansible-role-nginx
     tasks_from: installation.packages.yml
     allow_duplicates: yes
-#  when: nginx_installation_type == "packages"
+
+- name: Save the current list of packages for Debian/Ubuntu
+  shell: dpkg-query -l > /tmp/before.txt
+  when: ansible_os_family == "Debian" and ( nginx_modsec3_crs3_keep is undefined or not nginx_modsec3_crs3_keep )
+  changed_when: false
+
+- name: Save the current list of packages for RHEL/Centos/OracleLinux
+  shell: rpm -qa > /tmp/before.txt
+  when: ansible_os_family == 'RedHat' and ( nginx_modsec3_crs3_keep is undefined or not nginx_modsec3_crs3_keep )
+  changed_when: false
+
+- name: Installing compiler dependencies for Debian/Ubuntu
+  apt:
+    name: "{{ nginx_modsec3_crs3_debian_compiler_reqs }}"
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Installing compiler dependencies for RHEL/Centos/OracleLinux please
+  dnf:
+    name: "{{ nginx_modsec3_crs3_redhat_compiler_reqs }}"
+    state: present
+  when: ansible_os_family == "RedHat"
 
 - name: get the rpm or apt package facts
   package_facts:
@@ -62,8 +63,8 @@
   set_fact:
     nginx_modsec3_crs3_nginx_version: "{{ ansible_facts.packages.nginx[0].version.split('-')[0] }}"
 
-- name: Compile ModSecurity3 and install OWAPS CRS3
-  include: compile.yml
+- name: Compile ModSecurity3 , install OWAPS CRS3, and build nginx modules
+  import_tasks: compile.yml
 
 - name: Configure Nginx now that the Modsec module is built
   import_role:
@@ -72,18 +73,22 @@
 - name: Check which packages were installed for Debian/Ubuntu
   shell: dpkg-query -l > /tmp/after.txt
   when: ansible_os_family == "Debian" and ( nginx_modsec3_crs3_keep is undefined or not nginx_modsec3_crs3_keep )
+  changed_when: false
 
-- name: Check which packages were installed for RHEL/Centos
+- name: Check which packages were installed for RHEL/Centos/OracleLinux
   shell: rpm -qa > /tmp/after.txt
   when: ansible_os_family == "RedHat" and ( nginx_modsec3_crs3_keep is undefined or not nginx_modsec3_crs3_keep )
+  changed_when: false
 
 - name: Create a list of installed packages
   shell: diff /tmp/before.txt /tmp/after.txt|awk '/>/{print $3}'
   register: installed
   when: nginx_modsec3_crs3_keep is undefined or not nginx_modsec3_crs3_keep
+  changed_when: false
 
 - name: Remove installed packages for compiling
   package:
     name: "{{ installed.stdout_lines }}"
     state: absent
   when: installed is defined and (nginx_modsec3_crs3_keep is undefined or not nginx_modsec3_crs3_keep)
+

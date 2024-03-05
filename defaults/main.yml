@@ -1,35 +1,51 @@
 ---
 # defaults file for ansible-role-nginx-modsec3-crs3
 
+# These are packages you want kept even after compiling has finished
 nginx_modsec3_crs3_debian_pre_reqs:
+  - git
   - libgeoip-dev
+  - libmaxminddb-dev
+  - libmaxminddb0
   - libcurl4-openssl-dev
-  - liblua5.2-dev
+  - liblua5.3-dev
   - libyajl-dev
   - libxml2-dev
-  - libpcre3-dev
-  - libpcre++-dev
+  - libpcre2-dev
+  #- libpcre++-dev #hmm I wonder if might need libpcre (1) still ?
   - ssdeep
   - libfuzzy-dev
-  - git
+  - libssl-dev
+  - zlib1g-dev
 
+# These are packages which are removed after compiling has finished
 nginx_modsec3_crs3_debian_compiler_reqs:
   - build-essential
 
+# These are packages you want kept even after compiling has finished
 nginx_modsec3_crs3_redhat_pre_reqs:
-  - GeoIP-devel
-  - curl-devel
-  # - lua-devel
-  # - yajl-devel
-  - libxml2-devel
-  - xz-devel
-  - pcre-devel
-  - ssdeep-devel
-  - ssdeep-libs
   - git
-  - openssl-devel
-  - libxslt-devel
-  - gd-devel
+  - GeoIP-devel           #modsec, might not exist in EL9 ?
+  #- libmaxminddb-devel    #modsec, but lets remove as EL8 has a broken compile error
+  #- libmaxminddb          #modsec, but same as above
+  - curl-devel            #modsec
+  - lua-devel             #modsec
+  - yajl-devel            #modsec
+  - libxml2-devel         #modsec
+  - lmdb-devel            #modsec
+  #- xz-devel             # unsure if still needed
+  - pcre-devel            #modsec, needed even if pcre2 is used 
+  - pcre2-devel           #modsec
+  - ssdeep-devel          # used by modsec
+  - ssdeep-libs           # used by modsec
+  - openssl-devel         #nginx
+  - libxslt-devel         #modsec 
 
+# These are packages which are removed after compiling has finished
 nginx_modsec3_crs3_redhat_compiler_reqs:
   - "@Development tools"
+
+nginx_modsec3_crs3_geoip_enabled: false
+nginx_modsec3_crs3_maxmind_enabled: false
+
+nginx_modsec3_crs3_core_rule_set_version: "v4.0.0"
